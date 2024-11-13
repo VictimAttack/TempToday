@@ -1,0 +1,12 @@
+# Instantiate the HRDocumentGenerator
+hr_generator = HRDocumentGenerator()
+
+# Generate documents for each HR topic
+topics = [
+    "Employee Type", "Access and Permissions", "Leave Policy", "Flexible Benefits Plan", "NPS",
+    "Transfer of PF Accounts", "Relocation Policy", "HR Policy", "Recruitment Channel", "Learning Platform",
+    "Shift and On-call Policy", "Performance Policies", "Rewards and Recognition"
+]
+
+for topic in topics:
+    hr_generator.generate_hr_document(topic)
