@@ -1,0 +1,87 @@
+import openai
+import os
+from fpdf import FPDF
+from docx import Document
+from azure.identity import DefaultAzureCredential
+from azure.ai.textanalytics import TextAnalyticsClient
+
+# Azure OpenAI setup (Replace with your credentials)
+openai.api_key = 'YOUR_OPENAI_API_KEY'  # Replace with your actual API key from Azure OpenAI
+openai.api_base = 'YOUR_OPENAI_API_BASE_URL'  # Example: https://api.openai.com
+
+# Key onboarding topics
+key_topics = [
+    "Employee Type (Permanent or Vendor)",
+    "Access regarding Laptop, ID, Joining Date, Offer Letter",
+    "Leave Policy Document",
+    "NPS Enrollment",
+    "Flexible Benefits Plan",
+    "Transfer of PF Accounts",
+    "Relocation Support",
+    "HR Policy Document",
+    "Recruitment Channel",
+    "Learning Platform Guides",
+    "Shift and On-Call Policy",
+    "Performance Policies",
+    "Rewards and Recognition"
+]
+
+# Function to generate document text using OpenAI API
+def generate_text(topic):
+    prompt = f"Generate detailed HR onboarding document for: {topic}."
+    
+    response = openai.Completion.create(
+        engine="gpt-3.5-turbo",  # You can use GPT-4 if available
+        prompt=prompt,
+        max_tokens=1000,
+        n=1,
+        stop=None,
+        temperature=0.7,
+    )
+    
+    return response.choices[0].text.strip()
+
+# Function to create a PDF document
+def create_pdf(topic, content):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt=topic, ln=True, align='C')
+    pdf.ln(10)
+    pdf.multi_cell(200, 10, txt=content)
+    pdf_output_path = f"{topic.replace(' ', '_')}_document.pdf"
+    pdf.output(pdf_output_path)
+    print(f"PDF Document created: {pdf_output_path}")
+
+# Function to create a Word document
+def create_word_doc(topic, content):
+    doc = Document()
+    doc.add_heading(topic, 0)
+    doc.add_paragraph(content)
+    word_output_path = f"{topic.replace(' ', '_')}_document.docx"
+    doc.save(word_output_path)
+    print(f"Word Document created: {word_output_path}")
+
+# Function to create a TXT document
+def create_txt_doc(topic, content):
+    txt_output_path = f"{topic.replace(' ', '_')}_document.txt"
+    with open(txt_output_path, 'w') as file:
+        file.write(f"{topic}\n\n{content}")
+    print(f"Text Document created: {txt_output_path}")
+
+# Loop through each key topic and generate documents
+def generate_onboarding_documents():
+    for topic in key_topics:
+        print(f"Generating document for: {topic}")
+        
+        # Get content from OpenAI API
+        content = generate_text(topic)
+        
+        # Create different formats for each document
+        create_pdf(topic, content)
+        create_word_doc(topic, content)
+        create_txt_doc(topic, content)
+
+# Run the document generation
+if __name__ == "__main__":
+    generate_onboarding_documents()
