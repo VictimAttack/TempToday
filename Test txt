@@ -1,0 +1,70 @@
+import pandas as pd
+from pydbgen import pydb
+from faker import Faker
+from fpdf import FPDF
+
+# Initialize pydbgen and Faker
+db = pydb()
+fake = Faker()
+
+# Define number of records
+num_records = 100
+
+# Generate structured data
+data = {
+    'Employee_ID': db.gen_dataframe(num_records, ['integer'])['integer'],
+    'Employee_Type': [fake.random_element(['Permanent', 'Vendor']) for _ in range(num_records)],
+    'Access_Laptop': [fake.random_element(['Granted', 'Not Granted']) for _ in range(num_records)],
+    'Access_ID': [fake.random_element(['Granted', 'Not Granted']) for _ in range(num_records)],
+    'Joining_Date': db.gen_dataframe(num_records, ['date'])['date'],
+    'Offer_Letter': [fake.random_element(['Sent', 'Pending']) for _ in range(num_records)],
+    'Leave_Policy': [fake.random_element(['Yes', 'No']) for _ in range(num_records)],
+    'NPS': [fake.random_element(['Enrolled', 'Not Enrolled']) for _ in range(num_records)],
+    'Flexible_Benefits': [fake.random_element(['Enrolled', 'Not Enrolled']) for _ in range(num_records)],
+    'PF_Transfer': [fake.random_element(['Initiated', 'Not Initiated']) for _ in range(num_records)],
+    'Relocation_Support': [fake.random_element(['Yes', 'No']) for _ in range(num_records)],
+    'HR_Policy': [fake.random_element(['Accessible', 'Restricted']) for _ in range(num_records)],
+    'Recruitment_Channel': [fake.random_element(['Internal Referral', 'External', 'Job Portal', 'Direct Application']) for _ in range(num_records)],
+    'Learning_Platform': [fake.random_element(['Access Granted', 'Pending']) for _ in range(num_records)],
+    'Shift_Policy': [fake.random_element(['Standard', 'On-call']) for _ in range(num_records)],
+    'Performance_Policy': [fake.random_element(['Standard', 'Customized']) for _ in range(num_records)],
+    'Rewards_Recognition': [fake.random_element(['Eligible', 'Not Eligible']) for _ in range(num_records)]
+}
+
+# Create DataFrame and save to CSV
+df = pd.DataFrame(data)
+df.to_csv("hr_onboarding_data.csv", index=False)
+print("Structured data saved as hr_onboarding_data.csv")
+
+# Initialize FPDF
+pdf = FPDF()
+
+# Create PDFs for each employee
+for i in range(num_records):
+    # Add a page
+    pdf.add_page()
+
+    # Employee Information
+    pdf.set_font("Arial", 'B', 16)
+    pdf.cell(200, 10, f"HR Onboarding Summary for Employee {df['Employee_ID'][i]}", 0, 1, 'C')
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, f"Employee Type: {df['Employee_Type'][i]}", 0, 1)
+    pdf.cell(200, 10, f"Access - Laptop: {df['Access_Laptop'][i]}, ID: {df['Access_ID'][i]}", 0, 1)
+    pdf.cell(200, 10, f"Joining Date: {df['Joining_Date'][i]}", 0, 1)
+    pdf.cell(200, 10, f"Offer Letter Status: {df['Offer_Letter'][i]}", 0, 1)
+    pdf.cell(200, 10, f"Leave Policy Document: {df['Leave_Policy'][i]}", 0, 1)
+    pdf.cell(200, 10, f"NPS Enrollment: {df['NPS'][i]}", 0, 1)
+    pdf.cell(200, 10, f"Flexible Benefits Plan: {df['Flexible_Benefits'][i]}", 0, 1)
+    pdf.cell(200, 10, f"PF Transfer Status: {df['PF_Transfer'][i]}", 0, 1)
+    pdf.cell(200, 10, f"Relocation Support: {df['Relocation_Support'][i]}", 0, 1)
+    pdf.cell(200, 10, f"HR Policy Access: {df['HR_Policy'][i]}", 0, 1)
+    pdf.cell(200, 10, f"Recruitment Channel: {df['Recruitment_Channel'][i]}", 0, 1)
+    pdf.cell(200, 10, f"Learning Platform Access: {df['Learning_Platform'][i]}", 0, 1)
+    pdf.cell(200, 10, f"Shift Policy: {df['Shift_Policy'][i]}", 0, 1)
+    pdf.cell(200, 10, f"Performance Policy: {df['Performance_Policy'][i]}", 0, 1)
+    pdf.cell(200, 10, f"Rewards and Recognition Eligibility: {df['Rewards_Recognition'][i]}", 0, 1)
+
+# Save PDF
+pdf_file_name = "hr_onboarding_summaries.pdf"
+pdf.output(pdf_file_name)
+print(f"Unstructured data saved as {pdf_file_name}")
