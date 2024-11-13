@@ -1,0 +1,109 @@
+import random
+from fpdf import FPDF
+from docx import Document
+
+# Define onboarding topics and sample templates
+key_topics = {
+    "Employee Type": [
+        "Employee is a permanent staff member with all benefits.",
+        "Employee is a vendor partner with limited access and benefits."
+    ],
+    "Access Details": [
+        "Provided with laptop, employee ID, and welcome kit on the joining date.",
+        "Access rights include email, work tools, and digital onboarding materials."
+    ],
+    "Leave Policy": [
+        "Employee is entitled to 20 days of annual leave, 10 sick leaves, and 2 personal days.",
+        "Special leaves include maternity/paternity leave and emergency leave."
+    ],
+    "NPS Enrollment": [
+        "NPS is available for all employees with monthly contributions.",
+        "Company matches a portion of the NPS contribution to support retirement."
+    ],
+    "Flexible Benefits Plan": [
+        "Employee can customize benefits including health, wellness, and insurance.",
+        "Options include gym memberships, wellness checks, and extra health cover."
+    ],
+    "PF Account Transfer": [
+        "Assistance provided for transferring existing PF accounts.",
+        "New employees may set up a PF account through HR support."
+    ],
+    "Relocation Support": [
+        "Relocation support includes moving expenses and temporary housing.",
+        "Employees relocating receive assistance with local accommodation."
+    ],
+    "HR Policies": [
+        "Detailed guidelines on workplace conduct, safety, and ethical practices.",
+        "Policies cover attendance, dress code, and data security."
+    ],
+    "Recruitment Channel": [
+        "Hired through campus placement, employee referral, or external agency.",
+        "Employee joined through a talent acquisition partner."
+    ],
+    "Learning Platform Guides": [
+        "Access to learning platforms like Udemy and LinkedIn Learning.",
+        "Guides available for career growth and skill development programs."
+    ],
+    "Shift and On-call Policy": [
+        "Standard shift is from 9 AM to 5 PM with occasional on-call duties.",
+        "Overtime compensation is provided for on-call shifts."
+    ],
+    "Performance Policies": [
+        "Performance reviews occur quarterly, with feedback from team leads.",
+        "Annual reviews determine salary adjustments and promotions."
+    ],
+    "Rewards and Recognition": [
+        "Top performers are eligible for bonuses and 'Employee of the Month' awards.",
+        "Recognition includes vouchers, certificates, and paid leave options."
+    ]
+}
+
+# Function to randomly select a template for each topic
+def generate_content_for_topic(topic):
+    content = random.choice(key_topics[topic])
+    return f"{topic}: {content}\n\n"
+
+# Function to create a PDF document
+def create_pdf(topic, content):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt=topic, ln=True, align='C')
+    pdf.ln(10)
+    pdf.multi_cell(0, 10, txt=content)
+    pdf_output_path = f"{topic.replace(' ', '_')}_document.pdf"
+    pdf.output(pdf_output_path)
+    print(f"PDF Document created: {pdf_output_path}")
+
+# Function to create a Word document
+def create_word_doc(topic, content):
+    doc = Document()
+    doc.add_heading(topic, level=1)
+    doc.add_paragraph(content)
+    word_output_path = f"{topic.replace(' ', '_')}_document.docx"
+    doc.save(word_output_path)
+    print(f"Word Document created: {word_output_path}")
+
+# Function to create a TXT document
+def create_txt_doc(topic, content):
+    txt_output_path = f"{topic.replace(' ', '_')}_document.txt"
+    with open(txt_output_path, 'w') as file:
+        file.write(content)
+    print(f"Text Document created: {txt_output_path}")
+
+# Generate documents for all topics
+def generate_onboarding_documents():
+    for topic in key_topics:
+        print(f"Generating document for: {topic}")
+        
+        # Generate content for each topic
+        content = generate_content_for_topic(topic)
+        
+        # Create documents in different formats
+        create_pdf(topic, content)
+        create_word_doc(topic, content)
+        create_txt_doc(topic, content)
+
+# Run the document generation
+if __name__ == "__main__":
+    generate_onboarding_documents()
