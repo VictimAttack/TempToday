@@ -1,0 +1,113 @@
+import random
+from fpdf import FPDF
+
+class HRDocumentGenerator:
+    def __init__(self):
+        # Define detailed keywords for each HR topic
+        self.keywords = {
+            "Employee Type": [
+                "full-time permanent employee", "temporary contractor", "vendor-managed personnel", 
+                "freelance engagement", "employment contract details", "job role classification", 
+                "probationary period policies", "eligibility for benefits", "termination and renewal terms", 
+                "non-compete and confidentiality agreements"
+            ],
+            "Access and Permissions": [
+                "corporate laptop issuance", "employee ID card generation", "network access provisioning", 
+                "two-factor authentication setup", "VPN access rights", "system login credentials", 
+                "building access protocols", "ID card activation and deactivation", "restricted access areas", 
+                "data privacy compliance"
+            ],
+            "Leave Policy": [
+                "annual paid leave entitlement", "sick leave eligibility criteria", "maternity and paternity leave policy",
+                "bereavement leave process", "public holiday schedule adherence", "unpaid leave request procedures",
+                "leave carry-forward rules", "emergency leave considerations", "family and medical leave act", 
+                "leave accrual calculations"
+            ],
+            "Flexible Benefits Plan": [
+                "health insurance options", "dental and vision coverage", "employee wellness programs", 
+                "mental health support", "workplace gym reimbursement", "childcare assistance", 
+                "401(k) retirement savings plan", "financial wellness coaching", "tuition reimbursement policy",
+                "paid volunteer time"
+            ],
+            "NPS": [
+                "National Pension Scheme enrollment", "investment portfolio selection", "employee contribution rates", 
+                "pension fund withdrawal options", "tax advantages of NPS", "vesting period requirements", 
+                "account portability and transfer", "nomination process for beneficiaries", "partial withdrawal rules", 
+                "exit and withdrawal options"
+            ],
+            "Transfer of PF Accounts": [
+                "provident fund account migration", "EPFO member portal usage", "PF balance transfer steps",
+                "documentation for PF transfer", "online transfer claim submission", "PF linking to UAN", 
+                "transfer request tracking", "account settlement process", "verification of previous employer", 
+                "claim approval and processing times"
+            ],
+            "Relocation Policy": [
+                "relocation expense reimbursement", "temporary housing arrangements", "moving company partnerships", 
+                "travel expenses for family members", "home finding assistance", "school search support", 
+                "settling-in allowance", "transport of personal belongings", "local cultural orientation", 
+                "relocation policy eligibility"
+            ],
+            "HR Policy": [
+                "code of conduct and ethics", "equal employment opportunity commitment", "anti-harassment policy",
+                "diversity and inclusion statement", "grievance resolution procedures", "professional attire guidelines", 
+                "work-from-home and remote work guidelines", "drug-free workplace compliance", "conflict of interest policy", 
+                "progressive discipline measures"
+            ],
+            "Recruitment Channel": [
+                "employee referral program", "campus recruitment drives", "internal job postings",
+                "job board advertising strategy", "social media recruitment tactics", "outsourced recruiting agencies",
+                "industry networking events", "diversity hiring initiatives", "candidate screening process", 
+                "job offer negotiation standards"
+            ],
+            "Learning Platform": [
+                "mandatory onboarding training modules", "learning management system (LMS) access", 
+                "technical skill-building courses", "professional development roadmap", "soft skills workshops",
+                "certification programs for employees", "on-demand learning resources", "tuition reimbursement guidelines", 
+                "career development paths", "mentorship and coaching programs"
+            ],
+            "Shift and On-call Policy": [
+                "shift differential pay rates", "weekend and holiday on-call expectations", 
+                "mandatory rest period compliance", "24/7 support staff rotation", "night shift allowance", 
+                "emergency on-call escalation policy", "shift scheduling software", "remote on-call support guidelines", 
+                "on-call coverage for public holidays", "compensatory time-off policy"
+            ],
+            "Performance Policies": [
+                "annual performance appraisal cycle", "goal-setting and tracking tools", "employee self-evaluation",
+                "peer and manager feedback sessions", "probation period review criteria", "performance improvement plans (PIPs)",
+                "salary increment and bonus calculations", "promotion eligibility and criteria", "career path progression", 
+                "employee development programs"
+            ],
+            "Rewards and Recognition": [
+                "monthly and annual employee awards", "spot bonuses for outstanding contributions", 
+                "team achievement celebrations", "peer-to-peer recognition platforms", "service anniversary awards",
+                "managerial appreciation emails", "company-wide shoutouts", "reward point redemption options", 
+                "incentive-based programs", "long-service recognition ceremonies"
+            ]
+        }
+
+    def generate_content(self, topic):
+        # Generate comprehensive content using keywords for the given topic
+        sentences = []
+        for keyword in self.keywords.get(topic, []):
+            sentence = f"{keyword.capitalize()} is a critical aspect of our {topic.lower()} to ensure both organizational compliance and employee satisfaction."
+            sentences.append(sentence)
+        
+        # Join sentences into a large paragraph to create substantial content
+        return " ".join(sentences)
+
+    def generate_hr_document(self, topic):
+        content = self.generate_content(topic)
+        
+        # Create a PDF document using the FPDF library
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size=12)
+        
+        pdf.cell(200, 10, txt=topic, ln=True, align='C')
+        pdf.ln(10)
+        pdf.multi_cell(0, 10, txt=content)
+        
+        # Save the file
+        filename = f"{topic.replace(' ', '_')}_document.pdf"
+        pdf.output(filename)
+        print(f"Document '{filename}' created successfully.")
